@@ -1,37 +1,51 @@
 package com.example.myapplicationviewmodel.ui.main
 
 import android.annotation.SuppressLint
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.myapplicationviewmodel.R
+import com.example.myapplicationviewmodel.appState.AppState
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.databinding.MainFragmentBinding
-import com.example.myapplicationviewmodel.appState.AppState
+import com.example.myapplicationviewmodel.save.SaveLoad
+import com.example.myapplicationviewmodel.save.SaveLoadImpl
 import com.google.android.material.snackbar.Snackbar
 import java.text.DecimalFormat
+
 
 class MainFragment : Fragment() {
 
     companion object {
+        const val BUNDLE_EXTRA = "weather"
+
+        fun newInstance(bundle: Bundle): MainFragment {
+            val fragment = MainFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+
         fun newInstance() = MainFragment()
+
     }
 
     private lateinit var viewModel: MainViewModel
+    private var saveLoad: SaveLoad? = null
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
+
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        saveLoad = SaveLoadImpl()
         _binding = MainFragmentBinding.inflate(inflater, container, false)
-
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getWeather()
@@ -39,23 +53,34 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(
+            view, savedInstanceState
+        )
+
+        var weather = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)
+
+        if (weather == null)
+            weather = saveLoad?.load(context)
+        else
+            saveLoad?.save(context, weather)
+
+        if (weather != null)
+            setData(weather)
+
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        saveLoad = null
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        retainInstance = true
-
-    }
 
     private fun renderData(appState: AppState) {
         when (appState) {
             is AppState.Success -> {
-                val weatherData = appState.weatherData
                 binding.loadingLayout.visibility = View.GONE
-                setData(weatherData)
             }
             is AppState.Loading -> {
                 binding.loadingLayout.visibility = View.VISIBLE
@@ -67,7 +92,6 @@ class MainFragment : Fragment() {
                     .setAction("Загрузить снова") { viewModel.getWeather() }
                     .show()
             }
-
         }
     }
 

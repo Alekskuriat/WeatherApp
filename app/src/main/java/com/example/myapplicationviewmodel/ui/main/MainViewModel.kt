@@ -1,9 +1,15 @@
 package com.example.myapplicationviewmodel.ui.main
 
+import android.content.Context
+import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.example.myapplicationviewmodel.repository.Repository
 import com.example.myapplicationviewmodel.repository.RepositoryImpl
 import com.example.myapplicationviewmodel.appState.AppState
+import com.example.myapplicationviewmodel.data.Weather
+import com.example.myapplicationviewmodel.save.SaveLoad
+import com.example.myapplicationviewmodel.save.SaveLoadImpl
 import java.lang.Thread.sleep
 import java.util.*
 import kotlin.random.Random
@@ -16,22 +22,27 @@ class MainViewModel(
 
     fun getLiveData() = liveDataToObserve
 
-    fun getWeather() = getDataFromLocalSource()
+    fun getWeather() = getDataFromLocalSource(true)
 
-    fun getWeatherFromLocalSource() = getDataFromLocalSource()
+    fun getWeatherFromLocalSourceRus() = getDataFromLocalSource(true)
+
+    fun getWeatherFromLocalSourceWorld() = getDataFromLocalSource(false)
+
+    fun getWeatherFromRemoteSource() = getDataFromLocalSource(true)
 
 
-    private fun getDataFromLocalSource() {
+    private fun getDataFromLocalSource(isRussian: Boolean) {
         liveDataToObserve.value = AppState.Loading
-        val appStateRandom: Int = Random.nextInt(1, 3)
         Thread {
             sleep(1000)
-            if (appStateRandom == 1)
-                liveDataToObserve.postValue(AppState.Success(repositoryImpl.getWeatherFromLocalStorage()))
-            else
-                liveDataToObserve.postValue(AppState.Error(Throwable()))
+            liveDataToObserve.postValue(
+                AppState.Success(
+                    if (isRussian)
+                        repositoryImpl.getWeatherFromLocalStorageRus()
+                    else repositoryImpl.getWeatherFromLocalStorageWorld()
+                )
+            )
         }.start()
-
     }
 
 

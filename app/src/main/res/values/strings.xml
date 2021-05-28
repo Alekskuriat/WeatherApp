@@ -10,6 +10,22 @@
     <string name="probability_of_precipitation_label">Вероятность осадков</string>
     <string name="wind_speed_label">Скорость ветра</string>
     <string name="wind_speed">%s м/с</string>
-
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="openDrawer">Открыть</string>
+    <string name="closeDrawer">Закрыть</string>
+    <string name="menu_home">Домой</string>
+    <string name="menu_gallery">Ufkkthtz</string>
+    <string name="menu_slideshow">Слайд</string>
+    <string name="by">by Kuriat A. supported by GeekBrains</string>
+    <string name="city_select">Выбор города</string>
+    <string name="Settings">Настройки</string>
+    <string name="about">О программе</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="weather">Weather</string>
+    <string name="geekbrains_weather">приложение создано при поддержке GeekBrains</string>
 
 </resources>
