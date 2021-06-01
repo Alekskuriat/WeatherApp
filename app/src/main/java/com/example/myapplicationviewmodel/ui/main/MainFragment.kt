@@ -39,7 +39,6 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,13 +59,15 @@ class MainFragment : Fragment() {
 
         var weather = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)
 
-        if (weather == null)
-            weather = saveLoad?.load(context)
-        else
-            saveLoad?.save(context, weather)
+        weather?.let {
+            saveLoad?.save(context, it)
+            setData(it)
+        }
 
-        if (weather != null)
-            setData(weather)
+        if (weather == null) {
+            saveLoad?.load(context)?.let { setData(it) }
+        }
+
 
     }
 

@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.myapplicationviewmodel.R
 import com.example.myapplicationviewmodel.adapters.CitySelectAdapter
 import com.example.myapplicationviewmodel.appState.AppState
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.databinding.FragmentCitySelectBinding
+import com.example.myapplicationviewmodel.databinding.MainFragmentBinding
 import com.example.myapplicationviewmodel.router.AppRouter
 import com.example.myapplicationviewmodel.router.RouterHolder
 import com.google.android.material.snackbar.Snackbar
@@ -19,21 +21,24 @@ class CitySelectFragment : Fragment() {
 
     private var _binding: FragmentCitySelectBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var viewModel: MainViewModel
+    private var isDataSetRus: Boolean = true
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
 
     private val adapter = CitySelectAdapter(object : OnItemViewClickListener {
         override fun onItemViewClick(weather: Weather) {
-            val manager = activity?.supportFragmentManager
-            if (manager != null) {
-                val bundle = Bundle()
-                bundle.putParcelable(MainFragment.BUNDLE_EXTRA, weather)
-                val routerHolder : AppRouter? = (activity as RouterHolder).getRouter()
-                routerHolder?.showCityWeather(bundle)
+
+            activity?.supportFragmentManager?.apply {
+                (activity as RouterHolder).getRouter()
+                    ?.showCityWeather(Bundle().apply {
+                        putParcelable(MainFragment.BUNDLE_EXTRA, weather)
+                    })
             }
+
         }
     })
-    private var isDataSetRus: Boolean = true
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +52,6 @@ class CitySelectFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getWeatherFromLocalSourceRus()
     }
@@ -72,14 +76,10 @@ class CitySelectFragment : Fragment() {
             }
             is AppState.Error -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
-                Snackbar
-                    .make(
-                        binding.mainFragmentFAB,
-                        "Ошибка загрузки данных",
-                        Snackbar.LENGTH_INDEFINITE
-                    )
-                    .setAction("Загрузить снова") { viewModel.getWeatherFromLocalSourceRus() }
-                    .show()
+                binding.mainFragmentRootView.showSnackBar(
+                    getString(R.string.error),
+                    getString(R.string.reload),
+                    { viewModel.getWeatherFromLocalSourceRus() })
             }
         }
     }
@@ -91,6 +91,15 @@ class CitySelectFragment : Fragment() {
 
     interface OnItemViewClickListener {
         fun onItemViewClick(weather: Weather)
+    }
+
+    private fun View.showSnackBar(
+        text: String,
+        actionText: String,
+        action: (View) -> Unit,
+        length: Int = Snackbar.LENGTH_INDEFINITE
+    ) {
+        Snackbar.make(this, text, length).setAction(actionText, action).show()
     }
 
     companion object {

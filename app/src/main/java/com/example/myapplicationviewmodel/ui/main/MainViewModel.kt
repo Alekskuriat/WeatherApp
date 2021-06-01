@@ -22,6 +22,7 @@ class MainViewModel(
 
     fun getLiveData() = liveDataToObserve
 
+
     fun getWeather() = getDataFromLocalSource(true)
 
     fun getWeatherFromLocalSourceRus() = getDataFromLocalSource(true)

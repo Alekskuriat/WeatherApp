@@ -27,5 +27,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="weather">Weather</string>
     <string name="geekbrains_weather">приложение создано при поддержке GeekBrains</string>
+    <string name="error">Ошибка загрузки данных</string>
+    <string name="reload">Загрузить снова</string>
 
 </resources>
