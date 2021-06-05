@@ -1,6 +1,6 @@
 package com.example.myapplicationviewmodel.ui.main
 
-import android.annotation.SuppressLint
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplicationviewmodel.R
+import com.example.myapplicationviewmodel.WeatherDTO
 import com.example.myapplicationviewmodel.appState.AppState
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.databinding.MainFragmentBinding
+import com.example.myapplicationviewmodel.loader.WeatherLoader
+import com.example.myapplicationviewmodel.loader.WeatherLoaderListener
 import com.example.myapplicationviewmodel.save.SaveLoad
 import com.example.myapplicationviewmodel.save.SaveLoadImpl
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.main_fragment.*
+import retrofit2.Response
 import java.text.DecimalFormat
 
 
@@ -33,15 +38,35 @@ class MainFragment : Fragment() {
 
     }
 
+
     private lateinit var viewModel: MainViewModel
     private var saveLoad: SaveLoad? = null
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
+    private var weather: Weather? = null
+    private var weatherData: Weather? = null
+    private lateinit var loader: WeatherLoader
+    private val onLoadListener: WeatherLoaderListener =
+        object : WeatherLoaderListener {
+
+            override fun onLoaded(response: Response<WeatherDTO>) {
+                displayWeather(response)
+            }
+
+            override fun onFailed(str: String) {
+                Snackbar
+                    .make(binding.mainView, str, Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Загрузить снова") {
+                        weatherData?.let { weatherData -> initWeatherLoader(weatherData) }
+                    }
+                    .show()
+            }
+        }
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         saveLoad = SaveLoadImpl()
         _binding = MainFragmentBinding.inflate(inflater, container, false)
@@ -57,24 +82,68 @@ class MainFragment : Fragment() {
             view, savedInstanceState
         )
 
-        var weather = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)
+        weather = arguments?.getParcelable<Weather>(BUNDLE_EXTRA)
 
         weather?.let {
             saveLoad?.save(context, it)
-            setData(it)
+            weatherData = it
+            initWeatherLoader(it)
+        } ?: saveLoad?.load(context)?.let {
+            weatherData = it
+            initWeatherLoader(it)
         }
 
-        if (weather == null) {
-            saveLoad?.load(context)?.let { setData(it) }
-        }
 
+    }
 
+    private fun initWeatherLoader(weather: Weather) {
+        loader = WeatherLoader(onLoadListener, weather.city.lat, weather.city.lon)
+        loader.loadWeather()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         saveLoad = null
+    }
+
+
+    private fun displayWeather(response: Response<WeatherDTO>) {
+        val responses = response.body()
+        mainView.visibility = View.VISIBLE
+        loadingLayout.visibility = View.GONE
+        binding.cityName.text = weatherData?.city?.city
+        cityCoordinates.text = String.format(
+            getString(R.string.city_coordinates),
+            weatherData?.city?.lat.toString(),
+            weatherData?.city?.lon.toString()
+        )
+        binding.temperatureValue.text =
+            resources.getString(
+                R.string.temperature,
+                DecimalFormat("#0").format(responses?.factDTO?.temp)
+
+            )
+        binding.feelsLikeValue.text =
+            resources.getString(
+                R.string.temperature,
+                DecimalFormat("#0").format(responses?.factDTO?.feelsLike)
+            )
+        binding.humidityValue.text =
+            resources.getString(
+                R.string.humidity,
+                DecimalFormat("#0").format(responses?.factDTO?.humidity)
+            )
+        binding.probabilityOfPrecipitationValue.text =
+            resources.getString(
+                R.string.pressure_mm,
+                DecimalFormat("#0").format(responses?.factDTO?.pressure)
+            )
+        binding.windSpeedValue.text =
+            resources.getString(
+                R.string.wind_speed,
+                DecimalFormat("#0").format(responses?.factDTO?.windSpeed)
+            )
     }
 
 
@@ -94,31 +163,6 @@ class MainFragment : Fragment() {
                     .show()
             }
         }
-    }
-
-
-    @SuppressLint("StringFormatInvalid")
-    private fun setData(weatherData: Weather) {
-        binding.cityName.text = weatherData.city.city
-        binding.cityCoordinates.text = String.format(
-            getString(R.string.city_coordinates),
-            weatherData.city.lat.toString(),
-            weatherData.city.lon.toString()
-        )
-        binding.temperatureValue.text =
-            resources.getString(R.string.temperature, weatherData.temperature.toString())
-        binding.feelsLikeValue.text =
-            resources.getString(R.string.temperature, weatherData.feelsLike.toString())
-        binding.humidityValue.text = resources.getString(
-            R.string.humidity,
-            DecimalFormat("#0.0").format(weatherData.humidity)
-        )
-        binding.probabilityOfPrecipitationValue.text = resources.getString(
-            R.string.probability_of_precipitation,
-            weatherData.probabilityOfPrecipitation.toString()
-        )
-        binding.windSpeedValue.text =
-            resources.getString(R.string.wind_speed, weatherData.windSpeed.toString())
     }
 
 
