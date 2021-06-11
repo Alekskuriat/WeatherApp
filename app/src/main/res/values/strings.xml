@@ -4,12 +4,13 @@
     <string name="feels_like_label">Ощущается как</string>
     <string name="humidity_label">Влажность</string>
     <string name="city_coordinates">lt/ln: %s, %s"</string>
-    <string name="humidity">%s \%%</string>
+    <string name="humidity">%s %%</string>
     <string name="temperature">%s \u00B0C</string>
     <string name="probability_of_precipitation">%s \%%</string>
     <string name="probability_of_precipitation_label">Вероятность осадков</string>
     <string name="wind_speed_label">Скорость ветра</string>
     <string name="wind_speed">%s м/с</string>
+    <string name="pressure_mm">%s мм рт.ст.</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -27,5 +28,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="weather">Weather</string>
     <string name="geekbrains_weather">приложение создано при поддержке GeekBrains</string>
+    <string name="error">Ошибка загрузки данных</string>
+    <string name="reload">Загрузить снова</string>
+    <string name="pressure">Давление</string>
 
 </resources>

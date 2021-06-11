@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity(), RouterHolder {
     private lateinit var router: AppRouter
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity(), RouterHolder {
         }
     }
 
-   override fun getRouter(): AppRouter {
+    override fun getRouter(): AppRouter {
         return router
     }
 

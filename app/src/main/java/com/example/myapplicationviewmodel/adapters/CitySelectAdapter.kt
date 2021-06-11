@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplicationviewmodel.R
 import com.example.myapplicationviewmodel.data.Weather
@@ -24,8 +23,6 @@ class CitySelectAdapter(
     fun removeListener() {
         onItemViewClickListener = null
     }
-
-
 
 
     override fun onCreateViewHolder(
@@ -49,10 +46,13 @@ class CitySelectAdapter(
     inner class MainViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(weather: Weather) {
-            itemView.findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text = weather.city.city
-            itemView.setOnClickListener {
-                onItemViewClickListener?.onItemViewClick(weather)
+
+            itemView.apply {
+                findViewById<TextView>(R.id.mainFragmentRecyclerItemTextView).text =
+                    weather.city.city
+                setOnClickListener { onItemViewClickListener?.onItemViewClick(weather) }
             }
+
         }
     }
 }
