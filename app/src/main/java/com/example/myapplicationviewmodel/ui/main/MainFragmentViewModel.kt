@@ -8,33 +8,29 @@ import com.example.myapplicationviewmodel.loader.RemoteDataSource
 import com.example.myapplicationviewmodel.repository.MainRepository
 import com.example.myapplicationviewmodel.repository.MainRepositoryImpl
 import com.example.myapplicationviewmodel.utils.convertDtoToModel
-import com.google.gson.Gson
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
-import java.io.IOException
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 private const val SERVER_ERROR = "Ошибка сервера"
 private const val REQUEST_ERROR = "Ошибка запроса на сервер"
 private const val CORRUPTED_DATA = "Неполные данные"
 
 class MainFragmentViewModel(
-    private val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
+    val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
     private val detailsRepositoryImpl: MainRepository = MainRepositoryImpl(RemoteDataSource()),
 ) : ViewModel() {
 
-    fun getLiveData() = detailsLiveData
-
-    fun getWeatherFromRemoteSource(requestLink: String) {
+    fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
         detailsLiveData.value = AppState.Loading
-        detailsRepositoryImpl.getWeatherDetailsFromServer(requestLink, callBack)
+        detailsRepositoryImpl.getWeatherDetailsFromServer(lat, lon, callBack)
     }
 
-    private val callBack = object : Callback {
+    private val callBack = object :
+        Callback<WeatherDTO> {
 
-        @Throws(IOException::class)
-        override fun onResponse(call: Call?, response: Response) {
-            val serverResponse: String? = response.body()?.string()
+        override fun onResponse(call: Call<WeatherDTO>, response: Response<WeatherDTO>) {
+            val serverResponse: WeatherDTO? = response.body()
             detailsLiveData.postValue(
                 if (response.isSuccessful && serverResponse != null) {
                     checkResponse(serverResponse)
@@ -44,24 +40,22 @@ class MainFragmentViewModel(
             )
         }
 
-        override fun onFailure(call: Call?, e: IOException?) {
-            detailsLiveData.postValue(AppState.Error(Throwable(e?.message ?: REQUEST_ERROR)))
+        override fun onFailure(call: Call<WeatherDTO>, t: Throwable) {
+            detailsLiveData.postValue(AppState.Error(Throwable(t.message ?: REQUEST_ERROR)))
         }
 
-        private fun checkResponse(serverResponse: String): AppState {
-            val weatherDTO: WeatherDTO =
-                Gson().fromJson(serverResponse, WeatherDTO::class.java)
-            val fact = weatherDTO.factDTO
+        private fun checkResponse(serverResponse: WeatherDTO): AppState {
+            val fact = serverResponse.factDTO
             return if (fact?.temp == null ||
                 fact.feelsLike == null ||
                 fact.humidity == null ||
-                fact.windSpeed == null ||
                 fact.pressure == null ||
+                fact.windSpeed == null ||
                 fact.condition.isNullOrEmpty()
             ) {
                 AppState.Error(Throwable(CORRUPTED_DATA))
             } else {
-                AppState.Success(convertDtoToModel(weatherDTO))
+                AppState.Success(convertDtoToModel(serverResponse))
             }
         }
     }

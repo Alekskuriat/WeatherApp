@@ -1,22 +1,16 @@
 package com.example.myapplicationviewmodel.ui.main
 
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.myapplicationviewmodel.DTO.FactDTO
 import com.example.myapplicationviewmodel.R
-import com.example.myapplicationviewmodel.WeatherDTO
 import com.example.myapplicationviewmodel.appState.AppState
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.databinding.MainFragmentBinding
@@ -24,9 +18,8 @@ import com.example.myapplicationviewmodel.loader.*
 import com.example.myapplicationviewmodel.save.SaveLoad
 import com.example.myapplicationviewmodel.save.SaveLoadImpl
 import com.example.myapplicationviewmodel.utils.showSnackBar
-import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_fragment.*
-import retrofit2.Response
 import java.text.DecimalFormat
 
 const val DETAILS_INTENT_FILTER = "DETAILS INTENT FILTER"
@@ -61,7 +54,7 @@ class MainFragment : Fragment() {
 
     }
 
-    private lateinit var LAT_LON_URL : String
+    private lateinit var LAT_LON_URL: String
     private var saveLoad: SaveLoad? = null
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
@@ -95,11 +88,10 @@ class MainFragment : Fragment() {
         }
 
         LAT_LON_URL = "lat=${weatherData?.city?.lat}&lon=${weatherData?.city?.lon}"
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getWeatherFromRemoteSource(
-            MAIN_URL + LAT_LON_URL)
-
-
+        viewModel.detailsLiveData.observe(viewLifecycleOwner, Observer { renderData(it) })
+        weatherData?.city?.let {
+            viewModel.getWeatherFromRemoteSource(it.lat, it.lon)
+        }
     }
 
     override fun onDestroyView() {
@@ -127,8 +119,9 @@ class MainFragment : Fragment() {
                     getString(R.string.error),
                     getString(R.string.reload),
                     {
-                        viewModel.getWeatherFromRemoteSource(
-                            MAIN_URL + LAT_LON_URL)
+                        weatherData?.city?.let {
+                            viewModel.getWeatherFromRemoteSource(it.lat, it.lon)
+                        }
                     })
             }
         }
@@ -169,66 +162,19 @@ class MainFragment : Fragment() {
                 DecimalFormat("#0").format(weather.windSpeed)
             )
         binding.conditionValue.text = weather.condition
+
+        if (!resources.getBoolean(R.bool.isLandscape)) {
+            Picasso
+                .get()
+                .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
+                .into(headerIcon)
+
+            binding.weatherIcon?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_clear))
+        }
     }
+
 
 }
 
-
-/*
-private fun renderData(weatherDTO: WeatherDTO) {
-    binding.mainView.visibility = View.VISIBLE
-    binding.loadingLayout.visibility = View.GONE
-
-    val fact = weatherDTO.factDTO
-    val temp = fact?.temp
-    val feelsLike = fact?.feelsLike
-    val humidity = fact?.humidity
-    val windSpeed = fact?.windSpeed
-    val pressure = fact?.pressure
-
-    if (temp == TEMP_INVALID ||
-        feelsLike == FEELS_LIKE_INVALID ||
-        humidity == HUMIDITY_INVALID ||
-        windSpeed == WINDSPEED_INVALID ||
-        pressure == PRESSURE_INVALID
-    ) {
-        errorExtra()
-    } else {
-
-        binding.cityName.text = weatherData?.city?.city
-        cityCoordinates.text = String.format(
-            getString(R.string.city_coordinates),
-            weatherData?.city?.lat.toString(),
-            weatherData?.city?.lon.toString()
-        )
-        binding.temperatureValue.text =
-            resources.getString(
-                R.string.temperature,
-                DecimalFormat("#0").format(temp)
-
-            )
-        binding.feelsLikeValue.text =
-            resources.getString(
-                R.string.temperature,
-                DecimalFormat("#0").format(feelsLike)
-            )
-        binding.humidityValue.text =
-            resources.getString(
-                R.string.humidity,
-                DecimalFormat("#0").format(humidity)
-            )
-        binding.probabilityOfPrecipitationValue.text =
-            resources.getString(
-                R.string.pressure_mm,
-                DecimalFormat("#0").format(pressure)
-            )
-        binding.windSpeedValue.text =
-            resources.getString(
-                R.string.wind_speed,
-                DecimalFormat("#0").format(windSpeed)
-            )
-    }
-}
-*/
 
 

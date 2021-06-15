@@ -13,7 +13,8 @@ class Weather(
     val humidity: Float = 0f, //влажность
     val windSpeed: Float = 0f, //скорость ветра
     val pressure: Float = 0f,
-    val condition: String = "sunny"
+    val condition: String = "sunny",
+    val icon: String? = "bkn_n"
 ) : Parcelable
 
 fun getDefaultCity() =

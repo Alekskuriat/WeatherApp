@@ -20,4 +20,7 @@ class FactDTO(
 
     @SerializedName("condition")
     var condition: String?,
+
+    @SerializedName("icon")
+    var icon: String?
 )

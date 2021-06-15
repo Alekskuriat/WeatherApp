@@ -1,8 +1,11 @@
 package com.example.myapplicationviewmodel.repository
 
-import okhttp3.Callback
-
+import com.example.myapplicationviewmodel.WeatherDTO
 
 interface MainRepository {
-    fun getWeatherDetailsFromServer(requestLink: String, callback: Callback)
+    fun getWeatherDetailsFromServer(
+        lat: Double,
+        lon: Double,
+        callback: retrofit2.Callback<WeatherDTO>,
+    )
 }

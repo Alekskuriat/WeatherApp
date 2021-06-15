@@ -14,5 +14,6 @@ fun convertDtoToModel(weatherDTO: WeatherDTO): List<Weather> {
         fact.humidity!!,
         fact.windSpeed!!,
         fact.pressure!!,
-        fact.condition!!))
+        fact.condition!!,
+        fact.icon))
 }
