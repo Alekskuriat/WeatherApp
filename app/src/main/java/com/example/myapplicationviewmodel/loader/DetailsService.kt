@@ -8,6 +8,7 @@ import com.example.myapplicationviewmodel.WeatherDTO
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.myapplicationviewmodel.DTO.WeatherApi
 import com.example.myapplicationviewmodel.ui.main.*
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,9 +61,9 @@ class DetailsService (name: String = "MainFragment") : IntentService(name) {
                 call: Call<WeatherDTO>,
                 response: Response<WeatherDTO>,
             ) {
-                if (response.code() == 200) {
+                if (response.isSuccessful){
+                //if (response.code() == 200) {
                     onResponse(response)
-                    //listener.onLoaded(response)
                 }
             }
         })
