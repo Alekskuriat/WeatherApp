@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplicationviewmodel.R
 import com.example.myapplicationviewmodel.appState.AppState
+import com.example.myapplicationviewmodel.data.City
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.databinding.MainFragmentBinding
 import com.example.myapplicationviewmodel.loader.*
@@ -128,7 +129,8 @@ class MainFragment : Fragment() {
     }
 
     private fun setWeather(weather: Weather) {
-
+        val city = weatherData?.city
+        city?.let { saveCity(it, weather) }
         binding.cityName.text = weatherData?.city?.city
         cityCoordinates.text = String.format(
             getString(R.string.city_coordinates),
@@ -169,8 +171,21 @@ class MainFragment : Fragment() {
                 .load("https://freepngimg.com/thumb/city/36275-3-city-hd.png")
                 .into(headerIcon)
 
-            binding.weatherIcon?.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_clear))
+            binding.weatherIcon?.setImageDrawable(ContextCompat.getDrawable(requireContext(),
+                R.drawable.ic_baseline_clear))
         }
+    }
+
+    private fun saveCity(city: City, weather: Weather) {
+        viewModel.saveCityToDB(Weather(
+            city,
+            weather.temperature,
+            weather.feelsLike,
+            weather.humidity,
+            weather.windSpeed,
+            weather.pressure,
+            weather.condition
+        ))
     }
 
 

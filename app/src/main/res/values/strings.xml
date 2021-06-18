@@ -31,5 +31,7 @@
     <string name="error">Ошибка загрузки данных</string>
     <string name="reload">Загрузить снова</string>
     <string name="pressure">Давление</string>
+    <string name="menu_title_history">History</string>
+    <string name="history">История</string>
 
 </resources>

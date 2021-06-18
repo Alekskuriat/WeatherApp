@@ -3,8 +3,12 @@ package com.example.myapplicationviewmodel.ui.main
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplicationviewmodel.WeatherDTO
+import com.example.myapplicationviewmodel.app.App.Companion.getHistoryDao
 import com.example.myapplicationviewmodel.appState.AppState
+import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.loader.RemoteDataSource
+import com.example.myapplicationviewmodel.repository.LocalRepository
+import com.example.myapplicationviewmodel.repository.LocalRepositoryImpl
 import com.example.myapplicationviewmodel.repository.MainRepository
 import com.example.myapplicationviewmodel.repository.MainRepositoryImpl
 import com.example.myapplicationviewmodel.utils.convertDtoToModel
@@ -19,11 +23,17 @@ private const val CORRUPTED_DATA = "Неполные данные"
 class MainFragmentViewModel(
     val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
     private val detailsRepositoryImpl: MainRepository = MainRepositoryImpl(RemoteDataSource()),
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
+
 ) : ViewModel() {
 
     fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
         detailsLiveData.value = AppState.Loading
         detailsRepositoryImpl.getWeatherDetailsFromServer(lat, lon, callBack)
+    }
+
+    fun saveCityToDB(weather: Weather) {
+        historyRepository.saveEntity(weather)
     }
 
     private val callBack = object :
