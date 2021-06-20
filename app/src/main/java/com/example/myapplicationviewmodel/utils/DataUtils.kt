@@ -28,7 +28,9 @@ fun convertHistoryEntityToWeather(entityList: List<HistoryEntity>): List<Weather
             it.humidity,
             it.windSpeed,
             it.pressure,
-            it.condition)
+            it.condition,
+            id = it.id
+        )
     }
 }
 

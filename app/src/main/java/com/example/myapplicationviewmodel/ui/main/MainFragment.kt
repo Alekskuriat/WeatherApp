@@ -1,7 +1,6 @@
 package com.example.myapplicationviewmodel.ui.main
 
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import com.example.myapplicationviewmodel.appState.AppState
 import com.example.myapplicationviewmodel.data.City
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.databinding.MainFragmentBinding
-import com.example.myapplicationviewmodel.loader.*
 import com.example.myapplicationviewmodel.save.SaveLoad
 import com.example.myapplicationviewmodel.save.SaveLoadImpl
 import com.example.myapplicationviewmodel.utils.showSnackBar

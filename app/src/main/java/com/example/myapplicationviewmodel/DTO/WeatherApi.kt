@@ -12,8 +12,8 @@ interface WeatherApi {
     @Headers(BuildConfig.API_KEY)
     @GET("v2/informers?")
     fun getWeatherNow(
-        @Query("lat") lat:String?,
-        @Query("lon") lon:String?
+        @Query("lat") lat:String,
+        @Query("lon") lon:String
     ) : Call<WeatherDTO>?
 
 }

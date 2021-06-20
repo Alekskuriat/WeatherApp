@@ -38,7 +38,8 @@ class HistoryAdapter : RecyclerView.Adapter<HistoryAdapter.RecyclerItemViewHolde
         fun bind(data: Weather) {
             if (layoutPosition != RecyclerView.NO_POSITION) {
                 itemView.recyclerViewItem.text =
-                    String.format("%s t: %.0f \u2103 %.0f  %.0f м/с %.0f ммрт.ст. %s",
+                    String.format("%3d. %s t: %.0f \u2103 %.0f  %.0f м/с %.0f ммрт.ст. %s",
+                        data.id,
                         data.city.city,
                         data.temperature,
                         data.humidity,

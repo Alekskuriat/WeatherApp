@@ -3,6 +3,7 @@ package com.example.myapplicationviewmodel.ui.main
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplicationviewmodel.WeatherDTO
+import com.example.myapplicationviewmodel.app.App
 import com.example.myapplicationviewmodel.app.App.Companion.getHistoryDao
 import com.example.myapplicationviewmodel.appState.AppState
 import com.example.myapplicationviewmodel.data.Weather
@@ -11,6 +12,7 @@ import com.example.myapplicationviewmodel.repository.LocalRepository
 import com.example.myapplicationviewmodel.repository.LocalRepositoryImpl
 import com.example.myapplicationviewmodel.repository.MainRepository
 import com.example.myapplicationviewmodel.repository.MainRepositoryImpl
+import com.example.myapplicationviewmodel.room.HistoryDao
 import com.example.myapplicationviewmodel.utils.convertDtoToModel
 import retrofit2.Call
 import retrofit2.Callback
@@ -23,7 +25,8 @@ private const val CORRUPTED_DATA = "Неполные данные"
 class MainFragmentViewModel(
     val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
     private val detailsRepositoryImpl: MainRepository = MainRepositoryImpl(RemoteDataSource()),
-    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao().historyDao())
+
 
 ) : ViewModel() {
 
@@ -34,6 +37,7 @@ class MainFragmentViewModel(
 
     fun saveCityToDB(weather: Weather) {
         historyRepository.saveEntity(weather)
+
     }
 
     private val callBack = object :

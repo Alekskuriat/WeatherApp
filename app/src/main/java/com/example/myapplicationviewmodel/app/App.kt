@@ -18,7 +18,7 @@ class App : Application() {
         private var db: HistoryDataBase? = null
         private const val DB_NAME = "History.db"
 
-        fun getHistoryDao(): HistoryDao {
+        fun getHistoryDao(): HistoryDataBase {
             if (db == null) {
                 synchronized(HistoryDataBase::class.java) {
                     if (db == null) {
@@ -33,7 +33,7 @@ class App : Application() {
                 }
             }
 
-            return db!!.historyDao()
+            return db!!
         }
     }
 }

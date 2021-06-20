@@ -1,5 +1,6 @@
 package com.example.myapplicationviewmodel.repository
 
+import com.example.myapplicationviewmodel.app.App
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.room.HistoryDao
 import com.example.myapplicationviewmodel.utils.convertHistoryEntityToWeather

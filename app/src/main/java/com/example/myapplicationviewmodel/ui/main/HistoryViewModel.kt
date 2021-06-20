@@ -9,7 +9,7 @@ import com.example.myapplicationviewmodel.repository.LocalRepositoryImpl
 
 class HistoryViewModel(
     val historyLiveData: MutableLiveData<AppState> = MutableLiveData(),
-    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao())
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao().historyDao())
 ) : ViewModel() {
 
     fun getAllHistory() {
