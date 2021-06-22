@@ -1,5 +1,6 @@
 package com.example.myapplicationviewmodel.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +17,9 @@ import com.example.myapplicationviewmodel.databinding.MainFragmentBinding
 import com.example.myapplicationviewmodel.router.AppRouter
 import com.example.myapplicationviewmodel.router.RouterHolder
 import com.google.android.material.snackbar.Snackbar
+import java.time.chrono.IsoChronology
+
+private const val IS_WORLD_KEY = "LIST_OF_TOWNS_KEY"
 
 class CitySelectFragment : Fragment() {
 
@@ -42,7 +46,7 @@ class CitySelectFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentCitySelectBinding.inflate(inflater, container, false)
         return binding.root
@@ -53,7 +57,18 @@ class CitySelectFragment : Fragment() {
         binding.mainFragmentRecyclerView.adapter = adapter
         binding.mainFragmentFAB.setOnClickListener { changeWeatherDataSet() }
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer { renderData(it) })
-        viewModel.getWeatherFromLocalSourceRus()
+        //        viewModel.getWeatherFromLocalSourceRus()
+        showListOfTown()
+    }
+
+    private fun showListOfTown() {
+        activity?.let {
+            if (it.getPreferences(Context.MODE_PRIVATE).getBoolean(IS_WORLD_KEY, false)) {
+                viewModel.getWeatherFromLocalSourceRus()
+            } else {
+                changeWeatherDataSet()
+            }
+        }
     }
 
     private fun changeWeatherDataSet() {
@@ -63,6 +78,17 @@ class CitySelectFragment : Fragment() {
             viewModel.getWeatherFromLocalSourceRus()
         }
         isDataSetRus = !isDataSetRus
+
+        saveListOfTown(isDataSetRus)
+    }
+
+    private fun saveListOfTown(bool: Boolean) {
+        activity?.let {
+            with(it.getPreferences(Context.MODE_PRIVATE).edit()) {
+                putBoolean(IS_WORLD_KEY, bool)
+                apply()
+            }
+        }
     }
 
     private fun renderData(appState: AppState) {
@@ -97,7 +123,7 @@ class CitySelectFragment : Fragment() {
         text: String,
         actionText: String,
         action: (View) -> Unit,
-        length: Int = Snackbar.LENGTH_INDEFINITE
+        length: Int = Snackbar.LENGTH_INDEFINITE,
     ) {
         Snackbar.make(this, text, length).setAction(actionText, action).show()
     }

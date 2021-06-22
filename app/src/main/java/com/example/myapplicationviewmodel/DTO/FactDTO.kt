@@ -2,19 +2,25 @@ package com.example.myapplicationviewmodel.DTO
 
 import com.google.gson.annotations.SerializedName
 
-class FactDTO {
+class FactDTO(
     @SerializedName("temp")
-    var temp = 0f
+    var temp: Float?,
 
     @SerializedName("feels_like")
-    var feelsLike = 0f
+    var feelsLike: Float?,
 
     @SerializedName("humidity")
-    var humidity = 0f
+    var humidity: Float?,
 
     @SerializedName("wind_speed")
-    var windSpeed = 0f
+    var windSpeed: Float?,
 
     @SerializedName("pressure_mm")
-    var pressure = 0f
-}
+    var pressure: Float?,
+
+    @SerializedName("condition")
+    var condition: String?,
+
+    @SerializedName("icon")
+    var icon: String?
+)

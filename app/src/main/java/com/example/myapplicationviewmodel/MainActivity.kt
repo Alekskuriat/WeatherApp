@@ -3,12 +3,15 @@ package com.example.myapplicationviewmodel
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.myapplicationviewmodel.router.AppRouter
 import com.example.myapplicationviewmodel.router.RouterHolder
+import com.example.myapplicationviewmodel.ui.main.HistoryFragment
 import com.google.android.material.navigation.NavigationView
 
 
@@ -47,6 +50,10 @@ class MainActivity : AppCompatActivity(), RouterHolder {
             }
             if (item.itemId == R.id.nav_setting) {
                 router.showSettings()
+                drawer.closeDrawer(Gravity.LEFT)
+            }
+            if (item.itemId == R.id.nav_history) {
+                router.showHistory()
                 drawer.closeDrawer(Gravity.LEFT)
             }
             if (item.itemId == R.id.nav_about) {

@@ -3,11 +3,8 @@ package com.example.myapplicationviewmodel.router
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import com.example.myapplicationviewmodel.ui.main.AboutFragment
-import com.example.myapplicationviewmodel.ui.main.CitySelectFragment
 import com.example.myapplicationviewmodel.R
-import com.example.myapplicationviewmodel.ui.main.SettingFragment
-import com.example.myapplicationviewmodel.ui.main.MainFragment
+import com.example.myapplicationviewmodel.ui.main.*
 
 
 class AppRouter(
@@ -45,6 +42,13 @@ class AppRouter(
         fragmentManager.beginTransaction()
             .replace(R.id.container, CitySelectFragment())
             .commit()
+    }
+
+    fun showHistory(){
+        fragmentManager.beginTransaction()
+            .replace(R.id.container, HistoryFragment.newInstance())
+            .addToBackStack("History")
+            .commitAllowingStateLoss()
     }
 
 
