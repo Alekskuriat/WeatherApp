@@ -10,7 +10,7 @@ class LocalRepositoryImpl(private val localDataSource: HistoryDao) :
     LocalRepository {
 
     override fun getAllHistory(): List<Weather> {
-        return convertHistoryEntityToWeather(localDataSource.   all())
+        return convertHistoryEntityToWeather(localDataSource.all())
     }
 
     override fun saveEntity(weather: Weather) {
@@ -19,7 +19,7 @@ class LocalRepositoryImpl(private val localDataSource: HistoryDao) :
 
     override fun deleteAllEntity(listWeather: List<Weather>) {
         val listId = mutableListOf<Long>()
-        listWeather.forEach{
+        listWeather.forEach {
             listId.add(it.id)
         }
         localDataSource.deleteByIdList(listId)

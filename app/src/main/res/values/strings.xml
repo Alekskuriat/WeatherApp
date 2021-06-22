@@ -33,5 +33,6 @@
     <string name="pressure">Давление</string>
     <string name="menu_title_history">History</string>
     <string name="history">История</string>
+    <string name="contacts">Контакты</string>
 
 </resources>

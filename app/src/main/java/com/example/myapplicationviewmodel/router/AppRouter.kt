@@ -51,6 +51,12 @@ class AppRouter(
             .commitAllowingStateLoss()
     }
 
+    fun showContacts() {
+        fragmentManager.beginTransaction()
+            .replace(R.id.container, ContentProviderFragment.newInstance())
+            .addToBackStack("Contacts")
+            .commitAllowingStateLoss()
+    }
 
 
 }
