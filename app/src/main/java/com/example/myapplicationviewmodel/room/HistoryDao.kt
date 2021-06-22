@@ -1,6 +1,5 @@
 package com.example.myapplicationviewmodel.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -20,5 +19,8 @@ interface HistoryDao {
 
     @Delete
     fun delete(entity: HistoryEntity)
+
+    @Query("DELETE from HistoryEntity WHERE id IN (:idList)")
+    fun deleteByIdList(idList: List<Long?>?)
 }
 

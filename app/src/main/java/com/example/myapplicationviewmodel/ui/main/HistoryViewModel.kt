@@ -16,4 +16,9 @@ class HistoryViewModel(
         historyLiveData.value = AppState.Loading
         historyLiveData.value = AppState.Success(historyRepository.getAllHistory())
     }
+
+    fun deleteEntityFromDB() {
+        historyRepository.deleteAllEntity(historyRepository.getAllHistory())
+        historyLiveData.value = AppState.Success(historyRepository.getAllHistory())
+    }
 }

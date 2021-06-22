@@ -8,10 +8,7 @@ import com.example.myapplicationviewmodel.app.App.Companion.getHistoryDao
 import com.example.myapplicationviewmodel.appState.AppState
 import com.example.myapplicationviewmodel.data.Weather
 import com.example.myapplicationviewmodel.loader.RemoteDataSource
-import com.example.myapplicationviewmodel.repository.LocalRepository
-import com.example.myapplicationviewmodel.repository.LocalRepositoryImpl
-import com.example.myapplicationviewmodel.repository.MainRepository
-import com.example.myapplicationviewmodel.repository.MainRepositoryImpl
+import com.example.myapplicationviewmodel.repository.*
 import com.example.myapplicationviewmodel.room.HistoryDao
 import com.example.myapplicationviewmodel.utils.convertDtoToModel
 import retrofit2.Call
@@ -25,10 +22,10 @@ private const val CORRUPTED_DATA = "Неполные данные"
 class MainFragmentViewModel(
     val detailsLiveData: MutableLiveData<AppState> = MutableLiveData(),
     private val detailsRepositoryImpl: MainRepository = MainRepositoryImpl(RemoteDataSource()),
-    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao().historyDao())
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao().historyDao()),
 
 
-) : ViewModel() {
+    ) : ViewModel() {
 
     fun getWeatherFromRemoteSource(lat: Double, lon: Double) {
         detailsLiveData.value = AppState.Loading

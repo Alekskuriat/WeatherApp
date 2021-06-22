@@ -32,6 +32,7 @@ class HistoryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         historyFragmentRecyclerview.adapter = adapter
+        binding.deleteEntity.setOnClickListener { viewModel.deleteEntityFromDB() }
         viewModel.historyLiveData.observe(viewLifecycleOwner, Observer { renderData(it) })
         viewModel.getAllHistory()
     }
