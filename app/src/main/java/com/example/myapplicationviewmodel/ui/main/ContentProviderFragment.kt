@@ -54,6 +54,9 @@ class ContentProviderFragment : Fragment() {
         checkPermissionGetContacts()
         binding.sortBtn.setOnClickListener { sortingContacts() }
         viewModel.contactLiveData.observe(viewLifecycleOwner, Observer { renderData(it) })
+        activity?.let {
+            sortContacts = it.getPreferences(Context.MODE_PRIVATE).getBoolean(IS_WORLD_KEY, true)
+        }
 
     }
 
@@ -77,7 +80,7 @@ class ContentProviderFragment : Fragment() {
             is AppStateContacts.Success -> {
                 binding.mainFragmentLoadingLayout.visibility = View.GONE
                 activity?.let {
-                    if (it.getPreferences(Context.MODE_PRIVATE).getBoolean(IS_WORLD_KEY, true)) {
+                    if (sortContacts) {
                         for (i in AppState.listContacts.indices) {
                             context?.let { context ->
                                 addView(

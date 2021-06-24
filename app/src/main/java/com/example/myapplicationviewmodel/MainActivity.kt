@@ -60,6 +60,10 @@ class MainActivity : AppCompatActivity(), RouterHolder {
                 router.showContacts()
                 drawer.closeDrawer(Gravity.LEFT)
             }
+            if (item.itemId == R.id.nav_map) {
+                router.showMap()
+                drawer.closeDrawer(Gravity.LEFT)
+            }
             if (item.itemId == R.id.nav_about) {
                 router.showAbout()
                 drawer.closeDrawer(Gravity.LEFT)
