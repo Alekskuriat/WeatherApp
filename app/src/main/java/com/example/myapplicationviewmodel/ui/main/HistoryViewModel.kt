@@ -9,16 +9,25 @@ import com.example.myapplicationviewmodel.repository.LocalRepositoryImpl
 
 class HistoryViewModel(
     val historyLiveData: MutableLiveData<AppState> = MutableLiveData(),
-    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao().historyDao())
+    private val historyRepository: LocalRepository = LocalRepositoryImpl(getHistoryDao().historyDao()),
 ) : ViewModel() {
 
     fun getAllHistory() {
         historyLiveData.value = AppState.Loading
-        historyLiveData.value = AppState.Success(historyRepository.getAllHistory())
+        Thread {
+            historyLiveData.postValue(
+                AppState.Success(historyRepository.getAllHistory())
+            )
+        }.start()
+
     }
 
     fun deleteEntityFromDB() {
-        historyRepository.deleteAllEntity(historyRepository.getAllHistory())
-        historyLiveData.value = AppState.Success(historyRepository.getAllHistory())
+        Thread {
+            historyRepository.deleteAllEntity(historyRepository.getAllHistory())
+            historyLiveData.postValue(
+                AppState.Success(historyRepository.getAllHistory())
+            )
+        }.start()
     }
 }

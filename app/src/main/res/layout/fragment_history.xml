@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:layout_gravity="end|bottom"
-        android:src="@drawable/ic_baseline_autorenew_24"
+        android:src="@drawable/ic_baseline_delete_sweep_24"
+        android:backgroundTint="@color/white"
         app:maxImageSize="@dimen/fab_icon_size" />
 
 </FrameLayout>
